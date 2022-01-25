@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 
-const DiaryEditor = () => {
+const DiaryEditor = ({ onCreate }) => {
   const authorInput = useRef();
   const contentInput = useRef();
 
@@ -27,6 +27,8 @@ const DiaryEditor = () => {
       contentInput.current.focus();
       return;
     }
+
+    onCreate(state.author, state.content, state.emotion); //props로 받은 onCreate를 호출한다
 
     alert("저장 성공 !");
   };
