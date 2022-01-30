@@ -46,14 +46,16 @@ function App() {
     setData([newItem, ...data]); //추가된 아이템을 맨앞으로 정렬할거니깐 ...data보다 newItem을 앞에 넣는다
   };
 
-  const onDelete = (targetId) => {
+  const onRemove = (targetId) => {
     console.log(`${targetId}가 삭제 되었습니다.`);
+    const newDiaryList = data.filter((it) => it.id !== targetId); //필터링해서 targetId를 포함하지 않는 배열로만해서 배열을 리랜더해서 바꿔준다.
+    setData(newDiaryList);
   };
 
   return (
     <div className="App">
       <DiaryEditor onCreate={onCreate} />
-      <DiaryList diaryList={data} onDelete={onDelete} />
+      <DiaryList diaryList={data} onRemove={onRemove} />
     </div>
   );
 }

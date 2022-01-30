@@ -30,7 +30,7 @@ const DiaryEditor = ({ onCreate }) => {
 
     onCreate(state.author, state.content, state.emotion); //props로 받은 onCreate를 호출한다
 
-    alert("저장 성공!");
+    alert("저장 완료!");
 
     setState({
       author: "",
