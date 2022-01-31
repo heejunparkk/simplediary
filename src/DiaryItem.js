@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const DiaryItem = ({
   onRemove,
   author,
@@ -12,6 +14,10 @@ const DiaryItem = ({
     }
   };
 
+  const [isEdit, setIsEdit] = useState(false);
+  const toggleIsEdit = () => setIsEdit(!isEdit);
+  const [localContent, setLocalContent] = useState("");
+
   return (
     <div className="DiaryItem">
       <div className="info">
@@ -21,9 +27,22 @@ const DiaryItem = ({
         <br />
         <span className="date">{new Date(created_date).toLocaleString()}</span>
       </div>
-      <div className="content">{content}</div>
+
+      {/* 수정하기 버튼 누를시 textarea 추가하고 이벤트발생 */}
+      <div className="content">
+        {isEdit ? (
+          <>
+            <textarea
+              value={localContent}
+              onChange={(e) => setLocalContent(e.target.value)}
+            />
+          </>
+        ) : (
+          <>{content}</>
+        )}
+      </div>
       <button onClick={hadleRemove}>삭제하기</button>
-      <button>수정하기</button>
+      <button onClick={toggleIsEdit}>수정하기</button>
     </div>
   );
 };
