@@ -13,10 +13,16 @@ const DiaryItem = ({
       onRemove(id);
     }
   };
-
   const [isEdit, setIsEdit] = useState(false);
+
   const toggleIsEdit = () => setIsEdit(!isEdit);
-  const [localContent, setLocalContent] = useState("");
+
+  const [localContent, setLocalContent] = useState(content); //수정하기 버튼 누를때 textarea폼에 원래 있던 글을 그대로 다시 나오게 useState에 인자로 content를 삽입
+
+  const handleQuitEdit = () => {
+    setIsEdit(false);
+    setLocalContent(content);
+  }; //textarea를 수정하고 수정취소를 눌렀다가 수정하기를 다시 누를때 수정하기전 원래상태 내용으로부터 편집가능하게 해줌
 
   return (
     <div className="DiaryItem">
@@ -41,8 +47,17 @@ const DiaryItem = ({
           <>{content}</>
         )}
       </div>
-      <button onClick={hadleRemove}>삭제하기</button>
-      <button onClick={toggleIsEdit}>수정하기</button>
+      {isEdit ? (
+        <>
+          <button onClick={handleQuitEdit}>수정 취소</button>
+          <button>수정 완료</button>
+        </>
+      ) : (
+        <>
+          <button onClick={hadleRemove}>삭제하기</button>
+          <button onClick={toggleIsEdit}>수정하기</button>
+        </>
+      )}
     </div>
   );
 };
