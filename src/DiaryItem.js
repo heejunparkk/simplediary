@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 const DiaryItem = ({
+  onEdit,
   onRemove,
   author,
   content,
@@ -24,6 +25,19 @@ const DiaryItem = ({
     setLocalContent(content);
   }; //textarea를 수정하고 수정취소를 눌렀다가 수정하기를 다시 누를때 수정하기전 원래상태 내용으로부터 편집가능하게 해줌
 
+  const localContentInput = useRef();
+
+  const handleEdit = () => {
+    if (localContent.length < 5) {
+      localContentInput.current.focus();
+      return;
+    }
+    if (window.confirm(`${id}번째 일기를 수정하시겠습니까?`)) {
+      onEdit(id, localContent);
+      toggleIsEdit(); //수정폼을 닫아줌
+    }
+  };
+
   return (
     <div className="DiaryItem">
       <div className="info">
@@ -39,6 +53,7 @@ const DiaryItem = ({
         {isEdit ? (
           <>
             <textarea
+              ref={localContentInput}
               value={localContent}
               onChange={(e) => setLocalContent(e.target.value)}
             />
@@ -50,7 +65,7 @@ const DiaryItem = ({
       {isEdit ? (
         <>
           <button onClick={handleQuitEdit}>수정 취소</button>
-          <button>수정 완료</button>
+          <button onClick={handleEdit}>수정 완료</button>
         </>
       ) : (
         <>
