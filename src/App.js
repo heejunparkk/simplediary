@@ -1,10 +1,8 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useEffect } from "react/cjs/react.development";
 import "./App.css";
 import DiaryEditor from "./DiaryEditor";
 import DiaryList from "./DiaryList";
-
-//https://jsonplaceholder.typicode.com/comments
 
 function App() {
   const [data, setData] = useState([]); //일기데이터 배열을 저장할거기 때문에 배열을 초기값으로 함
@@ -32,7 +30,7 @@ function App() {
 
   useEffect(() => {
     getData();
-  });
+  }, []);
 
   // 새로운 일기 추가하는 함수
   const onCreate = (author, content, emotion) => {
@@ -63,9 +61,25 @@ function App() {
   //map함수를 이용하여 각각 모든요소들이 현재 매개변수로 전달받은 targetId와 일치하는 id를 갖는지 검사하고 일치하게되면 원본 대상을 모두 불러와서(...it)
   //content: newContent 로 업데이트 시켜주면 된다. id가 일치하지않으면 수정대상이 아니기때문에 it을 반환하게한다.
 
+  const getDiaryAnalysis = useMemo(() => {
+    console.log("일기분석시작");
+    const goodCount = data.filter((it) => it.emotion >= 3).length;
+    const badCount = data.length - goodCount;
+    const goodRatio = (goodCount / data.length) * 100;
+    return { goodCount, badCount, goodRatio };
+  }, [data.length]); //useMemo를 사용하면 getDiaryAnalysis는 함수가아니고 값으로 사용된다
+  //useMemo를 사용하여 최적화. deps배열에 data.length를 넣어서 전체 일기(20개)에서 개수가 변하면 getDiaryAnalysis가 리랜더링 되고
+  //일기 개수에 영향이없으면 리랜더 되지않고 일기 자체값만 변경됨.
+
+  const { goodCount, badCount, goodRatio } = getDiaryAnalysis; //useMemo를 사용하였으므로 함수(getDiaryAnalysis())가아닌 값(getDiaryAnalysis)으로 사용해야함
+
   return (
     <div className="App">
       <DiaryEditor onCreate={onCreate} />
+      <div>전체 일기 : {data.length}</div>
+      <div>기분 좋은 일기 개수 : {goodCount}</div>
+      <div>기분 나쁜 일기 개수 : {badCount}</div>
+      <div>기분 좋은 일기 비율 : {goodRatio}</div>
       <DiaryList diaryList={data} onRemove={onRemove} onEdit={onEdit} />
     </div>
   );
