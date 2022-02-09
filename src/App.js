@@ -3,6 +3,7 @@ import { useEffect } from "react/cjs/react.development";
 import "./App.css";
 import DiaryEditor from "./DiaryEditor";
 import DiaryList from "./DiaryList";
+import OptimizeTest from "./OptimizeTest";
 
 function App() {
   const [data, setData] = useState([]); //일기데이터 배열을 저장할거기 때문에 배열을 초기값으로 함
@@ -62,7 +63,6 @@ function App() {
   //content: newContent 로 업데이트 시켜주면 된다. id가 일치하지않으면 수정대상이 아니기때문에 it을 반환하게한다.
 
   const getDiaryAnalysis = useMemo(() => {
-    console.log("일기분석시작");
     const goodCount = data.filter((it) => it.emotion >= 3).length;
     const badCount = data.length - goodCount;
     const goodRatio = (goodCount / data.length) * 100;
@@ -75,6 +75,7 @@ function App() {
 
   return (
     <div className="App">
+      <OptimizeTest />
       <DiaryEditor onCreate={onCreate} />
       <div>전체 일기 : {data.length}</div>
       <div>기분 좋은 일기 개수 : {goodCount}</div>
