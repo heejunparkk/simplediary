@@ -8,19 +8,18 @@ const CounterA = React.memo(({ count }) => {
   return <div>{count}</div>;
 });
 
-const CounterB = React.memo(({ obj }) => {
+const CounterB = ({ obj }) => {
   useEffect(() => {
     console.log(`CounterB update - obj: ${obj}`);
   });
 
   return <div>{obj.count}</div>;
-});
+};
 
 const areEqual = (prevProps, nextProps) => {
-  if (prevProps.obj.count === nextProps.obj.count) {
-    return true;
-  }
-  return false;
+  return prevProps.obj.count === nextProps.obj.count;
+  //이전 props랑 현재 props가 같다 -> 리렌더링 안됨.
+  //이전 props랑 현재 props가 다르다 -> 리렌더링 됨.
 };
 
 const MemoizedCounterB = React.memo(CounterB, areEqual);

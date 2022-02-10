@@ -1,9 +1,7 @@
-import { useMemo, useRef, useState } from "react";
-import { useEffect } from "react/cjs/react.development";
+import { useCallback, useMemo, useEffect, useRef, useState } from "react";
 import "./App.css";
 import DiaryEditor from "./DiaryEditor";
 import DiaryList from "./DiaryList";
-import OptimizeTest from "./OptimizeTest";
 
 function App() {
   const [data, setData] = useState([]); //일기데이터 배열을 저장할거기 때문에 배열을 초기값으로 함
@@ -34,7 +32,7 @@ function App() {
   }, []);
 
   // 새로운 일기 추가하는 함수
-  const onCreate = (author, content, emotion) => {
+  const onCreate = useCallback((author, content, emotion) => {
     const created_date = new Date().getTime();
     const newItem = {
       author,
@@ -44,8 +42,9 @@ function App() {
       id: dataId.current,
     };
     dataId.current += 1;
-    setData([newItem, ...data]); //추가된 아이템을 맨앞으로 정렬할거니깐 ...data보다 newItem을 앞에 넣는다
-  };
+    setData((data) => [newItem, ...data]); //추가된 아이템을 맨앞으로 정렬할거니깐 ...data보다 newItem을 앞에 넣는다
+  }, []); //useCallback을 사용하여 일기 리스트의 일기를 수정하거나 삭제할때 마다 DiaryEditor 컴포넌트가 리렌더링 되지않게하기 위해서 사용한다.
+  //useCallback을 이용한 함수의 재생성과 함수를 재생성 하면서 항상 최신의 state를 참조할수있도록 도와주는 함수형 업데이트 setData((data) => [newItem, ...data]); 를 해주었다.
 
   const onRemove = (targetId) => {
     const newDiaryList = data.filter((it) => it.id !== targetId); //필터링해서 targetId를 포함하지 않는 배열로만해서 배열을 리랜더해서 바꿔준다.
@@ -75,7 +74,6 @@ function App() {
 
   return (
     <div className="App">
-      <OptimizeTest />
       <DiaryEditor onCreate={onCreate} />
       <div>전체 일기 : {data.length}</div>
       <div>기분 좋은 일기 개수 : {goodCount}</div>
