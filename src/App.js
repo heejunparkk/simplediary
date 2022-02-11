@@ -45,6 +45,7 @@ function App() {
     setData((data) => [newItem, ...data]); //추가된 아이템을 맨앞으로 정렬할거니깐 ...data보다 newItem을 앞에 넣는다
   }, []); //useCallback을 사용하여 일기 리스트의 일기를 수정하거나 삭제할때 마다 DiaryEditor 컴포넌트가 리렌더링 되지않게하기 위해서 사용한다.
   //useCallback을 이용한 함수의 재생성과 함수를 재생성 하면서 항상 최신의 state를 참조할수있도록 도와주는 함수형 업데이트 setData((data) => [newItem, ...data]); 를 해주었다.
+  //onCreate함수 그대로를 DiaryEditor컴포넌트에 그대로 전달해야하기 때문에 useMemo를 사용하면 값으로 반환되기때문에 사용하면 안된다.
 
   const onRemove = (targetId) => {
     const newDiaryList = data.filter((it) => it.id !== targetId); //필터링해서 targetId를 포함하지 않는 배열로만해서 배열을 리랜더해서 바꿔준다.
