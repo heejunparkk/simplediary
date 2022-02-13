@@ -63,9 +63,9 @@ function App() {
   //content: newContent 로 업데이트 시켜주면 된다. id가 일치하지않으면 수정대상이 아니기때문에 it을 반환하게한다.
 
   const getDiaryAnalysis = useMemo(() => {
-    const goodCount = data.filter((it) => it.emotion >= 3).length;
-    const badCount = data.length - goodCount;
-    const goodRatio = (goodCount / data.length) * 100;
+    const goodCount = data.filter((it) => it.emotion >= 3).length; //기분이 좋은 일의 개수
+    const badCount = data.length - goodCount; //기분이 나쁜 일기의 개수
+    const goodRatio = (goodCount / data.length) * 100; //기분이 좋은 일기의 비율
     return { goodCount, badCount, goodRatio };
   }, [data.length]); //useMemo를 사용하면 getDiaryAnalysis는 함수가아니고 값으로 사용된다
   //useMemo를 사용하여 최적화. deps배열에 data.length를 넣어서 전체 일기(20개)에서 개수가 변하면 getDiaryAnalysis가 리랜더링 되고
