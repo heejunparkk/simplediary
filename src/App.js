@@ -47,10 +47,10 @@ function App() {
   //useCallback을 이용한 함수의 재생성과 함수를 재생성 하면서 항상 최신의 state를 참조할수있도록 도와주는 함수형 업데이트 setData((data) => [newItem, ...data]); 를 해주었다.
   //onCreate함수 그대로를 DiaryEditor컴포넌트에 그대로 전달해야하기 때문에 useMemo를 사용하면 값으로 반환되기때문에 사용하면 안된다.
 
-  const onRemove = (targetId) => {
-    const newDiaryList = data.filter((it) => it.id !== targetId); //필터링해서 targetId를 포함하지 않는 배열로만해서 배열을 리랜더해서 바꿔준다.
-    setData(newDiaryList);
-  };
+  const onRemove = useCallback((targetId) => {
+    setData((data) => data.filter((it) => it.id !== targetId)); //필터링해서 targetId를 포함하지 않는 배열로만해서 배열을 리랜더해서 바꿔준다.
+  }, []); //setData에 전달되는 파라미터(data)에 최신state가 전달되는 것이기 때문에 항상 최신state를 이용하기 위해서는 함수형 업데이트에 인자 부분에 data를 사용해 주어야한다.
+  //그리고 리턴부분의 data를 사용해야 최신형 업데이트를 사용할수있다.
 
   const onEdit = (targetId, newContent) => {
     setData(
@@ -71,7 +71,8 @@ function App() {
   //useMemo를 사용하여 최적화. deps배열에 data.length를 넣어서 전체 일기(20개)에서 개수가 변하면 getDiaryAnalysis가 리랜더링 되고
   //일기 개수에 영향이없으면 리랜더 되지않고 일기 자체값만 변경됨.
 
-  const { goodCount, badCount, goodRatio } = getDiaryAnalysis; //useMemo를 사용하였으므로 함수(getDiaryAnalysis())가아닌 값(getDiaryAnalysis)으로 사용해야함
+  const { goodCount, badCount, goodRatio } = getDiaryAnalysis;
+  //useMemo를 사용하였으므로 함수(getDiaryAnalysis())가아닌 값(getDiaryAnalysis)으로 사용해야함
 
   return (
     <div className="App">
