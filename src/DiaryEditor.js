@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
 const DiaryEditor = ({ onCreate }) => {
-  useEffect(() => {
-    console.log("DiaryEditor 렌더");
-  }); //onCreate 함수가 재생성 되지 않아야 DiaryEditor를 React.memo와함께 최적화 할수있다.
+  //onCreate 함수가 재생성 되지 않아야 DiaryEditor를 React.memo와함께 최적화 할수있다.
   //즉 App컴포넌트의 onCreate 함수를 useCallback을 이용하여 최적화해야함.
 
   const authorInput = useRef();
