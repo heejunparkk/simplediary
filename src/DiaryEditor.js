@@ -1,8 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { DiaryDispatchContext } from "./App";
 
-const DiaryEditor = ({ onCreate }) => {
+const DiaryEditor = () => {
   //onCreate 함수가 재생성 되지 않아야 DiaryEditor를 React.memo와함께 최적화 할수있다.
   //즉 App컴포넌트의 onCreate 함수를 useCallback을 이용하여 최적화해야함.
+
+  const { onCreate } = useContext(DiaryDispatchContext);
 
   const authorInput = useRef();
   const contentInput = useRef();

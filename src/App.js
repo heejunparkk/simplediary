@@ -12,7 +12,7 @@ import DiaryList from "./DiaryList";
 const reducer = (state, action) => {
   switch (action.type) {
     case "INIT": {
-      return action.data;
+      return action.data; //새로운 state가 된다.
     }
     case "CREATE": {
       const created_date = new Date().getTime();
@@ -37,6 +37,10 @@ const reducer = (state, action) => {
 //reducer함수는 2개의 파라미터를 갖는다 첫번째는 상태변화가 일어나기 직전의 state, 두번째는 어떠한 상태변화를 일으켜야 하는지의 정보들이 담겨있는 action객체이다.
 //action객체가 담겨있는 type프로퍼티를 통해서 switch case를 이용해서 상태변화를 처리한다. 그리고 reducer가 return하는 값이 새로운 상태변화가 된다.
 
+export const DiaryStateContext = React.createContext();
+export const DiaryDispatchContext = React.createContext();
+//export Defualt는 파일하나당 하나밖에 못쓴다. 하지만 그냥 export는 여러개 쓸수있고 비구조화 할당을 통해서만 import를 받을수있다.
+
 function App() {
   // const [data, setData] = useState([]); //일기데이터 배열을 저장할거기 때문에 배열을 초기값으로 함
 
@@ -46,6 +50,7 @@ function App() {
   //배열의 비구조화할당의 0번째 인자로 state인 data로 설정하고 두번째인자는 항상 dispatch로 설정한다.
   //useReducer를 import하고 useState는 사용하지않는다.
   //useReducer는 기본적으로 2개의 인자를 꼭 넣어줘야한다. 첫번재인자는 상태변화를 처리할 함수인 reducer함수와 data state의 초기값인 []빈배열로 시작한다.
+  //dispatch는 함수형 업데이트 필요없이 그냥 호출하면 현재 state를 reducer함수가 참조해서 자동으로 적용시켜줘서 useCallback을 사용하면서 deps[] 를 걱정하지않아도 된다.
 
   const dataId = useRef(0);
 
@@ -113,6 +118,11 @@ function App() {
   //map함수를 이용하여 각각 모든요소들이 현재 매개변수로 전달받은 targetId와 일치하는 id를 갖는지 검사하고 일치하게되면 원본 대상을 모두 불러와서(...it)
   //content: newContent 로 업데이트 시켜주면 된다. id가 일치하지않으면 수정대상이 아니기때문에 it을 반환하게한다.
 
+  const memoizedDispatches = useMemo(() => {
+    return { onCreate, onRemove, onEdit };
+  }, []);
+  //useMemo를 사용하여 재생성 될수없게 객체로 onCreate, onRemove, onEdit를 묶어주고 빈배열뎁스[] 를사용한다.
+
   const getDiaryAnalysis = useMemo(() => {
     const goodCount = data.filter((it) => it.emotion >= 3).length; //기분이 좋은 일의 개수
     const badCount = data.length - goodCount; //기분이 나쁜 일기의 개수
@@ -126,14 +136,18 @@ function App() {
   //useMemo를 사용하였으므로 함수(getDiaryAnalysis())가아닌 값(getDiaryAnalysis)으로 사용해야함
 
   return (
-    <div className="App">
-      <DiaryEditor onCreate={onCreate} />
-      <div>전체 일기 : {data.length}</div>
-      <div>기분 좋은 일기 개수 : {goodCount}</div>
-      <div>기분 나쁜 일기 개수 : {badCount}</div>
-      <div>기분 좋은 일기 비율 : {goodRatio}</div>
-      <DiaryList diaryList={data} onRemove={onRemove} onEdit={onEdit} />
-    </div>
+    <DiaryStateContext.Provider value={data}>
+      <DiaryDispatchContext.Provider value={memoizedDispatches}>
+        <div className="App">
+          <DiaryEditor />
+          <div>전체 일기 : {data.length}</div>
+          <div>기분 좋은 일기 개수 : {goodCount}</div>
+          <div>기분 나쁜 일기 개수 : {badCount}</div>
+          <div>기분 좋은 일기 비율 : {goodRatio}</div>
+          <DiaryList />
+        </div>
+      </DiaryDispatchContext.Provider>
+    </DiaryStateContext.Provider>
   );
 }
 
